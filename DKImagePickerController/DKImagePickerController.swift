@@ -99,16 +99,12 @@ public class DKImagePickerController: UINavigationController {
 	public var showsCancelButton = false {
 		didSet {
 			if let rootVC =  self.viewControllers.first {
-				if showsCancelButton {
-					rootVC.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel,
-						target: self,
-						action: "dismiss")
-				} else {
-					rootVC.navigationItem.leftBarButtonItem = nil
-				}
+				self.updateCancelButtonForVC(rootVC)
 			}
 		}
 	}
+    /// This allows to clear @selectedAssets without creating new picker each time
+    public var shouldDeselectAssets: Bool = false
 	
     /// The callback block is executed when user pressed the select button.
     public var didSelectAssets: ((assets: [DKAsset]) -> Void)?
@@ -171,10 +167,15 @@ public class DKImagePickerController: UINavigationController {
 				self.setViewControllers([self.createCamera()], animated: false)
 			} else {
 				let rootVC = DKAssetGroupDetailVC()
+				self.updateCancelButtonForVC(rootVC)
 				self.setViewControllers([rootVC], animated: false)
 				rootVC.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.doneButton)
 			}
 		}
+
+        if shouldDeselectAssets {
+            self.selectedAssets.removeAll()
+        }
 	}
 	
 	private lazy var assetFetchOptions: PHFetchOptions = {
@@ -189,6 +190,16 @@ public class DKImagePickerController: UINavigationController {
 				self.assetType == .AllPhotos ? PHAssetMediaType.Image.rawValue : PHAssetMediaType.Video.rawValue)
 		}
 		return self.assetFetchOptions
+	}
+	
+	private func updateCancelButtonForVC(vc: UIViewController) {
+		if self.showsCancelButton {
+			vc.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel,
+				target: self,
+				action: "dismiss")
+		} else {
+			vc.navigationItem.leftBarButtonItem = nil
+		}
 	}
 	
     private func updateDoneButtonTitle() {
