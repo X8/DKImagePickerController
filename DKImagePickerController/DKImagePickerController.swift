@@ -171,10 +171,13 @@ public class DKImagePickerController: UINavigationController {
 				self.setViewControllers([rootVC], animated: false)
 				rootVC.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.doneButton)
 			}
-		}
-
-        if shouldDeselectAssets {
-            self.selectedAssets.removeAll()
+        } else if shouldDeselectAssets {
+            if let collectionVC = viewControllers[0] as? DKAssetGroupDetailVC {
+                for asset in selectedAssets {
+                    unselectedImage(asset)
+                }
+                collectionVC.collectionView?.reloadData()
+            }
         }
 	}
 	
