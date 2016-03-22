@@ -31,31 +31,22 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         allowMultipleType: Bool,
         sourceType: DKImagePickerControllerSourceType = [.Camera, .Photo],
 		allowsLandscape: Bool,
-		singleSelect: Bool,
-        shouldDeselect: Bool) {
-
-            let pickerController : DKImagePickerController
-
-            if let cachedPicker = cachedPicker where shouldDeselect == true {
-                pickerController = cachedPicker
-                pickerController.defaultSelectedAssets = nil
-            } else {
-               pickerController = DKImagePickerController()
-                if shouldDeselect {
-                    cachedPicker = pickerController
-                }
-                pickerController.assetType = assetType
-                pickerController.allowsLandscape = allowsLandscape
-                pickerController.allowMultipleTypes = allowMultipleType
-                pickerController.sourceType = sourceType
-                pickerController.singleSelect = singleSelect
-                //			pickerController.showsCancelButton = true
-                //			pickerController.showsEmptyAlbums = false
-                //			pickerController.defaultAssetGroup = PHAssetCollectionSubtype.SmartAlbumFavorites
-                pickerController.shouldDeselectAssets = shouldDeselect
-                pickerController.defaultSelectedAssets = self.assets
-            }
-
+		singleSelect: Bool) {
+			
+            let pickerController = DKImagePickerController()
+            pickerController.assetType = assetType
+			pickerController.allowsLandscape = allowsLandscape
+			pickerController.allowMultipleTypes = allowMultipleType
+			pickerController.sourceType = sourceType
+			pickerController.singleSelect = singleSelect
+//			pickerController.showsCancelButton = true
+//			pickerController.showsEmptyAlbums = false
+//			pickerController.defaultAssetGroup = PHAssetCollectionSubtype.SmartAlbumFavorites
+			
+			// Clear all the selected assets if you used the picker controller as a single instance.
+//			pickerController.defaultSelectedAssets = nil
+			pickerController.defaultSelectedAssets = self.assets
+            
             pickerController.didSelectAssets = { [unowned self] (assets: [DKAsset]) in
                 print("didSelectAssets")
 

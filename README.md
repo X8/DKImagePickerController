@@ -18,6 +18,7 @@ It's a Facebook style Image Picker Controller by Swift. It uses [DKCamera][DKCam
 * Supports landscape and iPad and orientation switching.
 * Supports iCloud.
 * Supports UIAppearance.
+* Supports custom camera.
 
 ## Requirements
 * iOS 8.0+
@@ -25,7 +26,7 @@ It's a Facebook style Image Picker Controller by Swift. It uses [DKCamera][DKCam
 
 ## Installation
 #### iOS 8 and newer
-DKImagePickerController is available on Cocoapods. Simply add the following line to your podfile:
+DKImagePickerController is available on CocoaPods. Simply add the following line to your podfile:
 
 ```ruby
 # For latest release in cocoapods
@@ -127,6 +128,26 @@ pickerController.sourceType = .Camera
 ```
 <img width="50%" height="50%" src="https://raw.githubusercontent.com/zhangao0086/DKImagePickerController/develop/Exhibit1.gif" />
 
+#### Create a custom camera
+
+You can give a class that implements the `DKImagePickerControllerUIDelegate` protocol to customize camera.
+```swift
+public class CustomUIDelegate: DKImagePickerControllerUIDelegate {
+    
+    @objc public func imagePickerControllerCreateCamera(imagePickerController: DKImagePickerController, didCancel: (() -> Void), didFinishCapturingImage: ((image: UIImage) -> Void)) -> UIViewController {
+        let vc = UIViewController()
+        vc.view.backgroundColor = UIColor.redColor()
+        
+        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(2 * Double(NSEC_PER_SEC)))
+        dispatch_after(delayTime, dispatch_get_main_queue()) {
+            didCancel()
+        }
+        
+        return vc
+    }
+}
+```
+
 ## How to use in Objective-C
 
 #### If you use [CocoaPods](http://cocoapods.org/)
@@ -180,6 +201,7 @@ It has been supported languages so far:
 
 * en.lproj
 * zh-Hans.lproj
+* hu.lproj
 
 If you want to add new language, pull request or issue!
 
@@ -203,31 +225,27 @@ asset.fetchImageWithSize(size, completeBlock: { image, info in
 })
 ```
 
-## [3.0.9](https://github.com/zhangao0086/DKImagePickerController/tree/3.0.9) (2016-01-29)
+## [3.1.1](https://github.com/zhangao0086/DKImagePickerController/tree/3.1.1) (2016-03-18)
 
-[Full Changelog](https://github.com/zhangao0086/DKImagePickerController/compare/3.0.8...3.0.9)
-
-**Merged pull requests:**
-
-- Fixed an issue that cause showsCancelButton flag is ignored.
-
-**Closed issues:**
-
-- showsCancelButton has no effect if set before presenting the view controller [\#66](https://github.com/zhangao0086/DKImagePickerController/issues/66)
-
-## [3.0.5](https://github.com/zhangao0086/DKImagePickerController/tree/3.0.5) (2016-01-17)
-
-[Full Changelog](https://github.com/zhangao0086/DKImagePickerController/compare/3.0.4...3.0.5)
+[Full Changelog](https://github.com/zhangao0086/DKImagePickerController/compare/3.0.10...3.1.1)
 
 **Merged pull requests:**
 
-- Added support for iPad.
+- Fixed an issue that may cause crash when user not authorized camera access.
 
-- Added support for landscape.
+## [3.1.0](https://github.com/zhangao0086/DKImagePickerController/tree/3.1.0) (2016-03-17)
 
-- Updated fetching targetSize for full-screen image.
+[Full Changelog](https://github.com/zhangao0086/DKImagePickerController/compare/3.0.11...3.1.0)
 
-- Make DKAssetGroup public.
+**Merged pull requests:**
+
+- Added support for custom camera.
+
+- Added support for UIDelegate.
+
+- Added a function to sync fetch an AVAsset.
+
+- Fixed an issue that may cause crashing when downloading image from iCloud.
 
 > [More logs...](https://github.com/zhangao0086/DKImagePickerController/blob/develop/CHANGELOG.md)
 

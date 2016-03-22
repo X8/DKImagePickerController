@@ -101,7 +101,7 @@ public class DKImageManager: DKBaseManager {
 			options: options ?? self.defaultImageRequestOptions,
 			resultHandler: { image, info in
 				if let isInCloud = info?[PHImageResultIsInCloudKey]?.boolValue
-					where isInCloud && self.autoDownloadWhenAssetIsInCloud {
+					where image == nil && isInCloud && self.autoDownloadWhenAssetIsInCloud {
 						var requestCloudOptions: PHImageRequestOptions
 						if let options = options {
 							requestCloudOptions = options.copy() as! PHImageRequestOptions
@@ -115,9 +115,14 @@ public class DKImageManager: DKBaseManager {
 				}
 		})
 	}
+	
 	public func fetchAVAsset(asset: DKAsset, completeBlock: (avAsset: AVURLAsset?) -> Void) {
+		self.fetchAVAsset(asset, options: nil, completeBlock: completeBlock)
+	}
+	
+	public func fetchAVAsset(asset: DKAsset, options: PHVideoRequestOptions?, completeBlock: (avAsset: AVURLAsset?) -> Void) {
 		self.manager.requestAVAssetForVideo(asset.originalAsset!,
-			options: nil) { avAsset, audioMix, info in
+			options: options) { avAsset, audioMix, info in
 				completeBlock(avAsset: avAsset as? AVURLAsset)
 		}
 	}
